@@ -16,7 +16,7 @@ PVector spherePos = new PVector(40,40,40);
 PVector gravity = new PVector(0,400,0);
 float radius = 1;
 PVector stringTop = new PVector(0,0,0);
-float restLen = 10;
+float restLen = 8;
 float mass = 1.0; //TRY-IT: How does changing mass affect resting length of the rope?
 float k = 500; //TRY-IT: How does changing k affect resting length of the rope?
 float kv = 125; //TRY-IT: How big can you make kv?
@@ -37,8 +37,8 @@ void initScene(){
   for (int i = 0; i < numRopes; i++){
     for (int j = 0; j < numNodes; j++){
       pos[i][j] = new PVector(0,0,0);
-      pos[i][j].x = stringTop.x + 8*i; // push each node to the side a little
-      pos[i][j].z = stringTop.z + 8*j; //Make each node a little lower
+      pos[i][j].x = stringTop.x + restLen*i; // push each node to the side a little
+      pos[i][j].z = stringTop.z + restLen*j; //Make each node a little lower
       vel[i][j] = new PVector(0,0,0);
     }
   }
@@ -72,14 +72,12 @@ void draw() {
       popMatrix();
     }
   }
-  
-  /*
+   
   fill( 0, 0, 255 );
   pushMatrix();
   translate( spherePos.x, spherePos.y, spherePos.z );
   sphere( sphereR );
-  popMatrix();
-  */
+  popMatrix(); 
   
   if (paused)
     surface.setTitle(windowTitle + " [PAUSED]");

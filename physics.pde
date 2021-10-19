@@ -17,6 +17,8 @@ void clothPhysics(float dt) {
       diff.sub(pos[i][j]);
       
       // diff.mag() is the length of the vector
+      // println(diff.mag());
+      
       float stringF = -k*(diff.mag() - restLen);
       //println(stringF,diff.length(),restLen);
       
@@ -39,6 +41,7 @@ void clothPhysics(float dt) {
     for (int j = 0; j < numNodes-1; j++){
       PVector diff = pos[i][j+1].copy();
       diff.sub(pos[i][j]);
+      
       float stringF = -k*(diff.mag() - restLen);
       //println(stringF,diff.length(),restLen);
       
@@ -54,6 +57,7 @@ void clothPhysics(float dt) {
     }
   }
 
+
   //Eulerian integration
   for (int i = 0; i < numRopes; i++){
     for (int j = 1; j < numNodes; j++){
@@ -63,8 +67,7 @@ void clothPhysics(float dt) {
       pos[i][j].add(dp.mult(dt));
     }
   }
-  
-  /*
+   
   //Collision detection with sphere
   for (int i = 0; i < numRopes; i++){
     for (int j = 0; j < numNodes; j++){
@@ -82,8 +85,7 @@ void clothPhysics(float dt) {
         pos[i][j].add(normal.mult(sphereR - dist + 0.1));
       }
     }
-  }
-  */
+  } 
 }
 
 float distTo(PVector first, PVector second) {
