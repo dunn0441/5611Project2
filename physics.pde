@@ -64,14 +64,28 @@ void clothPhysics(float dt) {
     }
   }
   
-  //Collision detection and response
+  /*
+  //Collision detection with sphere
   for (int i = 0; i < numRopes; i++){
     for (int j = 0; j < numNodes; j++){
-      if (pos[i][j].y+radius > floor){
-        vel[i][j].y *= -.9;
-        pos[i][j].y = floor - radius;
+      float dist = distTo(pos[i][j], spherePos);
+      if (dist < sphereR + radius) {
+        PVector normal = pos[i][j].copy();
+        normal.sub(spherePos);
+        normal.normalize();
+        
+        PVector bounce = normal.copy();
+        float bncStr = vel[i][j].dot(normal);
+        bounce.mult(bncStr);
+        
+        vel[i][j].sub(bounce.mult(1.0 + COR));
+        pos[i][j].add(normal.mult(sphereR - dist + 0.1));
       }
     }
   }
-  
+  */
+}
+
+float distTo(PVector first, PVector second) {
+  return dist(first.x, first.y, first.z, second.x, second.y, second.z);
 }
