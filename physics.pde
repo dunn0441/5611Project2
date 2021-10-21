@@ -57,22 +57,39 @@ void clothPhysics(float dt) {
     }
   }
 
-
+  /*
   //Eulerian integration
   for (int i = 0; i < numRopes; i++){
     for (int j = 1; j < numNodes; j++){
-      PVector dv = acc[i][j].copy();;
+      PVector dv = acc[i][j].copy();
       vel[i][j].add(dv.mult(dt));
-      PVector dp = vel[i][j].copy();;
+      PVector dp = vel[i][j].copy();
       pos[i][j].add(dp.mult(dt));
     }
   }
+  */
+
+  //Midpoint integration
+  for (int i = 0; i < numRopes; i++){
+    for (int j = 1; j < numNodes; j++){
+      PVector dv = acc[i][j].copy();
+      vel[i][j].add(dv.mult(dt));
+      PVector dp = vel[i][j].copy();
+      pos[i][j].add(dp.mult(dt));
+      pos[i][j].add(dv.mult(0.5*dt));
+    }
+  }
+  
+  
    
   //Collision detection with sphere
   for (int i = 0; i < numRopes; i++){
     for (int j = 0; j < numNodes; j++){
       float dist = distTo(pos[i][j], spherePos);
-      if (dist < sphereR + radius) {
+      // PVector dist = pos[i][j].copy();
+      // dist.sub(spherePos);
+      if (dist < sphereR + 0.5) {
+      // if (dist.mag() < sphereR + radius + 0.5 && dist.y < 0) {
         PVector normal = pos[i][j].copy();
         normal.sub(spherePos);
         normal.normalize();
@@ -82,7 +99,8 @@ void clothPhysics(float dt) {
         bounce.mult(bncStr);
         
         vel[i][j].sub(bounce.mult(1.0 + COR));
-        pos[i][j].add(normal.mult(sphereR - dist + 0.1));
+        pos[i][j].add(normal.mult(sphereR - dist + 0.6));
+        // pos[i][j].add(normal.mult(sphereR - dist.mag() + 0.6));
       }
     }
   } 

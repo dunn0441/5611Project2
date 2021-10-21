@@ -11,7 +11,7 @@ void setup() {
 
 //Simulation Parameters
 float sphereR = 20;
-float COR = 0.5;
+float COR = 0.8;
 PVector spherePos = new PVector(40,40,40);
 PVector gravity = new PVector(0,400,0);
 float radius = 1;
@@ -19,7 +19,7 @@ PVector stringTop = new PVector(0,0,0);
 float restLen = 8;
 float mass = 1.0; //TRY-IT: How does changing mass affect resting length of the rope?
 float k = 500; //TRY-IT: How does changing k affect resting length of the rope?
-float kv = 125; //TRY-IT: How big can you make kv?
+float kv = 100; //TRY-IT: How big can you make kv?
 
 //Initial positions and velocities of masses
 static int maxRopes = 100;
@@ -88,6 +88,10 @@ void draw() {
 void keyPressed(){
   if (key == ' ')
     paused = !paused;
+  if (key == 'p') {
+    initScene();
+    paused = true;
+  }
   camera.HandleKeyPressed();
 }
 
