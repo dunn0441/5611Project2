@@ -19,8 +19,8 @@ void clothPhysics(float dt) {
       // diff.mag() is the length of the vector
       // println(diff.mag());
       
-      float stringF = -k*(diff.mag() - restLen);
-      //println(stringF,diff.length(),restLen);
+      float stringF = -k*(diff.mag() - restLenRope);
+      //println(stringF,diff.length(),restLenRope);
       
       // normalize stringDir
       PVector stringDir = diff.copy();
@@ -42,8 +42,8 @@ void clothPhysics(float dt) {
       PVector diff = pos[i][j+1].copy();
       diff.sub(pos[i][j]);
       
-      float stringF = -k*(diff.mag() - restLen);
-      //println(stringF,diff.length(),restLen);
+      float stringF = -k*(diff.mag() - restLenNode);
+      //println(stringF,diff.length(),restLenNode);
       
       PVector stringDir = diff.copy();
       stringDir.normalize();
@@ -88,7 +88,7 @@ void clothPhysics(float dt) {
       float dist = distTo(pos[i][j], spherePos);
       // PVector dist = pos[i][j].copy();
       // dist.sub(spherePos);
-      if (dist < sphereR + 0.5) {
+      if (dist < sphereR + radius + offset) {
       // if (dist.mag() < sphereR + radius + 0.5 && dist.y < 0) {
         PVector normal = pos[i][j].copy();
         normal.sub(spherePos);
@@ -99,7 +99,7 @@ void clothPhysics(float dt) {
         bounce.mult(bncStr);
         
         vel[i][j].sub(bounce.mult(1.0 + COR));
-        pos[i][j].add(normal.mult(sphereR - dist + 0.6));
+        pos[i][j].add(normal.mult(sphereR - dist + radius + offset + 0.1));
         // pos[i][j].add(normal.mult(sphereR - dist.mag() + 0.6));
       }
     }

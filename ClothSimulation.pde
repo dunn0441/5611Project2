@@ -12,14 +12,17 @@ void setup() {
 //Simulation Parameters
 float sphereR = 20;
 float COR = 0.8;
-PVector spherePos = new PVector(40,40,40);
-PVector gravity = new PVector(0,400,0);
+PVector spherePos = new PVector(60,40,20);
+PVector gravity = new PVector(0,100,0);
+// PVector gravity = new PVector(0,400,0);
 float radius = 1;
 PVector stringTop = new PVector(0,0,0);
-float restLen = 8;
+float restLenNode = 2;
+float restLenRope = 4;
 float mass = 1.0; //TRY-IT: How does changing mass affect resting length of the rope?
 float k = 500; //TRY-IT: How does changing k affect resting length of the rope?
-float kv = 100; //TRY-IT: How big can you make kv?
+float kv = 250; //TRY-IT: How big can you make kv?
+float offset = 2;
 
 //Initial positions and velocities of masses
 static int maxRopes = 100;
@@ -29,16 +32,16 @@ PVector vel[][] = new PVector[maxRopes][maxNodes];
 PVector acc[][] = new PVector[maxRopes][maxNodes];
 
 // number of ropes and nodes in each rope
-int numRopes = 10;
-int numNodes = 10;
+int numRopes = 30;
+int numNodes = 20;
 
 void initScene(){
   
   for (int i = 0; i < numRopes; i++){
     for (int j = 0; j < numNodes; j++){
       pos[i][j] = new PVector(0,0,0);
-      pos[i][j].x = stringTop.x + restLen*i; // push each node to the side a little
-      pos[i][j].z = stringTop.z + restLen*j; //Make each node a little lower
+      pos[i][j].x = stringTop.x + restLenRope*i; // push each node to the side a little
+      pos[i][j].z = stringTop.z + restLenNode*j; //Make each node a little lower
       vel[i][j] = new PVector(0,0,0);
     }
   }
@@ -63,6 +66,7 @@ void draw() {
   }
   fill(0,0,0);
   
+  /*
   for (int i = 0; i < numRopes; i++){
     for (int j = 0; j < numNodes-1; j++){
       pushMatrix();
@@ -72,12 +76,16 @@ void draw() {
       popMatrix();
     }
   }
+  */
    
   fill( 0, 0, 255 );
   pushMatrix();
   translate( spherePos.x, spherePos.y, spherePos.z );
   sphere( sphereR );
   popMatrix(); 
+  
+  // color in the cloth
+  createTri();
   
   if (paused)
     surface.setTitle(windowTitle + " [PAUSED]");
