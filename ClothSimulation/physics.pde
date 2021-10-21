@@ -19,7 +19,7 @@ void clothPhysics(float dt) {
       // diff.mag() is the length of the vector
       // println(diff.mag());
       
-      float stringF = -k*(diff.mag() - restLenRope);
+      float stringF = -kHoriz*(diff.mag() - restLenRope);
       //println(stringF,diff.length(),restLenRope);
       
       // normalize stringDir
@@ -28,7 +28,7 @@ void clothPhysics(float dt) {
       
       float projVbot = vel[i][j].dot(stringDir);
       float projVtop = vel[i+1][j].dot(stringDir);
-      float dampF = -kv*(projVtop - projVbot);
+      float dampF = -kvHoriz*(projVtop - projVbot);
       
       PVector force = stringDir.mult(stringF+dampF);
       acc[i][j].add(force.mult(-1.0/mass));
@@ -42,20 +42,22 @@ void clothPhysics(float dt) {
       PVector diff = pos[i][j+1].copy();
       diff.sub(pos[i][j]);
       
-      float stringF = -k*(diff.mag() - restLenNode);
+      float stringF = -kVert*(diff.mag() - restLenNode);
       //println(stringF,diff.length(),restLenNode);
       
       PVector stringDir = diff.copy();
       stringDir.normalize();
       float projVbot = vel[i][j].dot(stringDir);
       float projVtop = vel[i][j+1].dot(stringDir);
-      float dampF = -kv*(projVtop - projVbot);
+      float dampF = -kvVert*(projVtop - projVbot);
       
       PVector force = stringDir.mult(stringF+dampF);
       acc[i][j].add(force.mult(-1.0/mass));
       acc[i][j+1].add(force.mult(-1.0));
     }
   }
+  
+  airDrag();
 
   /*
   //Eulerian integration

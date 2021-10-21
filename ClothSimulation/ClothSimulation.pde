@@ -13,16 +13,19 @@ void setup() {
 float sphereR = 20;
 float COR = 0.8;
 PVector spherePos = new PVector(60,40,20);
-PVector gravity = new PVector(0,100,0);
+PVector gravity = new PVector(0,50,0); //100
 // PVector gravity = new PVector(0,400,0);
 float radius = 1;
 PVector stringTop = new PVector(0,0,0);
-float restLenNode = 2;
+float restLenNode = 0.5;
 float restLenRope = 4;
-float mass = 1.0; //TRY-IT: How does changing mass affect resting length of the rope?
-float k = 500; //TRY-IT: How does changing k affect resting length of the rope?
-float kv = 250; //TRY-IT: How big can you make kv?
+float mass = 0.075; //TRY-IT: How does changing mass affect resting length of the rope?
+float kHoriz = 75; //TRY-IT: How does changing k affect resting length of the rope?
+float kVert = 75;
+float kvHoriz = 25; //TRY-IT: How big can you make kv?
+float kvVert = 25;
 float offset = 2;
+float cd = 0.5;
 
 //Initial positions and velocities of masses
 static int maxRopes = 100;
@@ -32,8 +35,8 @@ PVector vel[][] = new PVector[maxRopes][maxNodes];
 PVector acc[][] = new PVector[maxRopes][maxNodes];
 
 // number of ropes and nodes in each rope
-int numRopes = 30;
-int numNodes = 20;
+int numRopes = 50;
+int numNodes = 70;
 
 void initScene(){
   
@@ -55,13 +58,17 @@ void update(float dt){
 boolean paused = true;
 void draw() {
   background(255,255,255);
-  noLights();
+  //lights();
+  ambientLight(128, 128, 128);
+  directionalLight(128, 128, 128, 0.5, 1, 0);
+   lightFalloff(1, 0, 0);
+   lightSpecular(0, 0, 0);
 
   camera.Update(1.0/(frameRate));
   
   if (!paused) {
-    for (int i = 0; i < 20; i++) {
-      update(1/(20*frameRate));
+    for (int i = 0; i < 100; i++) {
+      update(1/(100*frameRate)); //20
     }
   }
   fill(0,0,0);
@@ -81,6 +88,7 @@ void draw() {
   fill( 0, 0, 255 );
   pushMatrix();
   translate( spherePos.x, spherePos.y, spherePos.z );
+  noStroke();
   sphere( sphereR );
   popMatrix(); 
   
