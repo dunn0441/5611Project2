@@ -3,7 +3,7 @@
 void createTri() {
   //stroke(255);
   noStroke();
-  fill(255,0,0);
+  fill(31,200,240);
   for (int i = 0; i < numRopes-1; i++){
     for (int j = 0; j < numNodes-1; j++){
       beginShape();
@@ -14,6 +14,7 @@ void createTri() {
       normal(pos[i][j+1].x, pos[i][j+1].y, pos[i][j+1].z);
       vertex(pos[i][j+1].x, pos[i][j+1].y, pos[i][j+1].z);
       endShape(CLOSE);
+      
       beginShape();
       normal(pos[i+1][j].x, pos[i+1][j].y, pos[i+1][j].z);
       vertex(pos[i+1][j].x, pos[i+1][j].y, pos[i+1][j].z);
@@ -34,7 +35,6 @@ void createQuad() {
   fill(255,0,0);
   for (int i = 0; i < numRopes-1; i++){
     for (int j = 0; j < numNodes-1; j++){
-      beginShape();
       vertex(pos[i][j].x, pos[i][j].y, pos[i][j].z);
       vertex(pos[i+1][j].x, pos[i+1][j].y, pos[i+1][j].z);
       vertex(pos[i+1][j+1].x, pos[i+1][j+1].y, pos[i+1][j+1].z);
@@ -49,8 +49,7 @@ void airDrag() {
     for (int j = 0; j < numNodes-1; j++){
       PVector area;
       PVector velocity;
-      PVector vAir = new PVector(1, 1, 0);
-      PVector normal;
+      PVector vAir = new PVector(0, 0, 0);
       PVector van;
       PVector faero;
       float coef;
@@ -64,8 +63,6 @@ void airDrag() {
       
       area = v1.cross(v2);
       
-      normal = area.copy().div(area.mag());
-      
       coef = velocity.mag();
       coef *= velocity.dot(area);
       coef /= (2 * area.mag());
@@ -74,10 +71,11 @@ void airDrag() {
       
       faero = van.copy().mult(-0.5 * cd);
       
+      faero.div(mass);
+      
       acc[i][j].sub(faero.mult(1/3));
       acc[i+1][j].sub(faero);
       acc[i][j+1].sub(faero);
-      
       
       //finding second triangle
       
@@ -90,8 +88,6 @@ void airDrag() {
       
       area = v1.cross(v2);
       
-      normal = area.copy().div(area.mag());
-      
       coef = velocity.mag();
       coef *= velocity.dot(area);
       coef /= (2 * area.mag());
@@ -99,6 +95,8 @@ void airDrag() {
       van = area.copy().mult(coef);
       
       faero = van.copy().mult(-0.5 * cd);
+      
+      faero.div(mass);
       
       acc[i+1][j+1].sub(faero.mult(1/3));
       acc[i+1][j].sub(faero);

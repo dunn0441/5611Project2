@@ -12,13 +12,13 @@ void setup() {
 //Simulation Parameters
 float sphereR = 20;
 float COR = 0.8;
-PVector spherePos = new PVector(60,40,20);
+PVector spherePos = new PVector(60, 40, 25);//(60,40,20);
 PVector gravity = new PVector(0,50,0); //100
 // PVector gravity = new PVector(0,400,0);
-float radius = 1;
+float radius = 1.0;
 PVector stringTop = new PVector(0,0,0);
 float restLenNode = 0.5;
-float restLenRope = 4;
+float restLenRope = 4.0;
 float mass = 0.075; //TRY-IT: How does changing mass affect resting length of the rope?
 float kHoriz = 75; //TRY-IT: How does changing k affect resting length of the rope?
 float kVert = 75;
@@ -36,7 +36,7 @@ PVector acc[][] = new PVector[maxRopes][maxNodes];
 
 // number of ropes and nodes in each rope
 int numRopes = 50;
-int numNodes = 70;
+int numNodes = 50;
 
 void initScene(){
   
@@ -67,8 +67,8 @@ void draw() {
   camera.Update(1.0/(frameRate));
   
   if (!paused) {
-    for (int i = 0; i < 100; i++) {
-      update(1/(100*frameRate)); //20
+    for (int i = 0; i < 75; i++) {
+      update(1/(75*frameRate)); //20
     }
   }
   fill(0,0,0);
@@ -85,7 +85,7 @@ void draw() {
   }
   */
    
-  fill( 0, 0, 255 );
+  fill( 234, 120, 12 );
   pushMatrix();
   translate( spherePos.x, spherePos.y, spherePos.z );
   noStroke();
