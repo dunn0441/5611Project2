@@ -7,13 +7,19 @@ void createTri() {
   for (int i = 0; i < numRopes-1; i++){
     for (int j = 0; j < numNodes-1; j++){
       beginShape();
+      normal(pos[i][j].x, pos[i][j].y, pos[i][j].z);
       vertex(pos[i][j].x, pos[i][j].y, pos[i][j].z);
+      normal(pos[i+1][j].x, pos[i+1][j].y, pos[i+1][j].z);
       vertex(pos[i+1][j].x, pos[i+1][j].y, pos[i+1][j].z);
+      normal(pos[i][j+1].x, pos[i][j+1].y, pos[i][j+1].z);
       vertex(pos[i][j+1].x, pos[i][j+1].y, pos[i][j+1].z);
       endShape(CLOSE);
       beginShape();
+      normal(pos[i+1][j].x, pos[i+1][j].y, pos[i+1][j].z);
       vertex(pos[i+1][j].x, pos[i+1][j].y, pos[i+1][j].z);
+      normal(pos[i+1][j+1].x, pos[i+1][j+1].y, pos[i+1][j+1].z);
       vertex(pos[i+1][j+1].x, pos[i+1][j+1].y, pos[i+1][j+1].z);
+      normal(pos[i][j+1].x, pos[i][j+1].y, pos[i][j+1].z);
       vertex(pos[i][j+1].x, pos[i][j+1].y, pos[i][j+1].z);
       endShape(CLOSE);
     }
@@ -43,7 +49,7 @@ void airDrag() {
     for (int j = 0; j < numNodes-1; j++){
       PVector area;
       PVector velocity;
-      PVector vAir = new PVector(0,0,0);
+      PVector vAir = new PVector(1, 1, 0);
       PVector normal;
       PVector van;
       PVector faero;

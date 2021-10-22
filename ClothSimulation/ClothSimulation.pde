@@ -60,7 +60,7 @@ void draw() {
   background(255,255,255);
   //lights();
   ambientLight(128, 128, 128);
-  directionalLight(128, 128, 128, 0.5, 1, 0);
+  directionalLight(128, 128, 128, 0, -1, 0);
    lightFalloff(1, 0, 0);
    lightSpecular(0, 0, 0);
 
