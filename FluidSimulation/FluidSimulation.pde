@@ -35,19 +35,26 @@
 static int n = 20;
 float dx = 400/n;
 float dy = 40;
-float heat[] = new float[n];
-float dheat_dt[] = new float[n];
+float h[] = new float[n];
+float hu[] = new float[n];
+
+// store midpoints
+float h_mid[] = new float[n];
+float hu_mid[] = new float[n];
+float dhdt_mid[] = new float[n]; //Height (midpoint)
+float dhudt_mid[] = new float[n]; //Momentum (mid)
+
 float alpha = 1000*n; 
 
 float k = 50;
 
 //Set up screen and initial conditions
-String windowTitle = "Heatflow Simulation";
+String windowTitle = "Fluid Simulation";
 void setup(){
   size(600, 300);
-  //Initial tepmapture distribution
+  //Initial height distribution
   for (int i = 0; i < n; i++){ //TODO: Try different initial conditions
-    heat[i] = i/(float)n;
+    h[i] = i/(float)n;
   }
 }
 
@@ -83,29 +90,23 @@ void redBlue(float u){
 }
 
 void update(float dt){
-  //Compute Gradiant of heat (du/dt = alpha*laplacian)
+  //use eulerian integration
   for (int i = 1; i < n-1; i++){
-    float leftGradient = (heat[i-1] - heat[i])/dx;
-    float rightGradient = (heat[i] - heat[i+1])/dx;
-    // laplacian is already calculated as negative of what it's supposed to be
-    float laplacian = (leftGradient - rightGradient)/dx; 
-    float laplacianAlt = (heat[i-1] - 2*heat[i] + heat[i+1])/(dx*dx);
-    // prints the same thing
-    // println(laplacian, laplacianAlt);
-    dheat_dt[i] = alpha * laplacian;
-    //TODO: Add evaporative cooling here
+    h_mid[i] = (h[i+1]+h[i])/2;
+    hu_mid[i] = (hu[i+1]+hu[i])/2;
+    
+    //Compute dh/dt (mid)
+    float dhudx_mid = (hu[i+1] - hu[i])/dx;
+    dhdt_mid[i] = -dhudx_mid;
+    //Compute dhu/dt (mid)   
+    dhu2dx_mid = (sq(hu[i+1])/h[i+1] -sq(hu[i])/h[i])/dx;
+    dgh2dx_mid = g*(sq(h[i+1]) - sq(h[i]))/dx;
+    dhudt_mid[i] = -(dhu2dx_mid + .5*dgh2dx_mid);
+    
+    h[i] += dhdt*dt;
+    hu[i] += dhudt*dt;
   }
   
-  //Impose (free) Bounardy Conditions
-  heat[0] = 1.0;
-  heat[n-1] = heat[n-2];
-  dheat_dt[0] = dheat_dt[1];
-  dheat_dt[n-1] = dheat_dt[n-2];
-  
-  //Integrate with Eulerian integration
-  for (int i = 0; i < n; i++){
-    heat[i] += dheat_dt[i]*dt;
-  }
 }
 
 boolean paused = true;

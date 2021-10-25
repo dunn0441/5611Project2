@@ -12,21 +12,21 @@ void setup() {
 //Simulation Parameters
 float sphereR = 20;
 float COR = 0.8;
-PVector spherePos = new PVector(60, 40, 25);//(60,40,20);
+PVector spherePos = new PVector(60, 60, 25);//(60,40,20);
 PVector gravity = new PVector(0, 100, 0); //100
 // PVector gravity = new PVector(0,400,0);
 float radius = 1.0;
 PVector stringTop = new PVector(0, 0, 0);
-float restLenNode = 1;
+float restLenNode = 2;
 float restLenRope = 2;
 float mass = 0.05;
-float kHoriz = 50;
-float kVert = 50;
-float kvHoriz = 25; 
-float kvVert = 25;
+float kHoriz = 40;
+float kVert = 40;
+float kvHoriz = 20; 
+float kvVert = 20;
 float offset = 0.1;
-// float cd = 0.003;
-float cd = 0;
+float cd = 0.001;
+//float cd = 0;
 
 //Initial positions and velocities of masses
 static int maxRopes = 100;
@@ -37,7 +37,7 @@ PVector acc[][] = new PVector[maxRopes][maxNodes];
 
 // number of ropes and nodes in each rope
 int numRopes = 50;
-int numNodes = 35;
+int numNodes = 25;
 
 void initScene() {
 
@@ -71,8 +71,8 @@ void draw() {
   camera.Update(1.0/(frameRate));
 
   if (!paused) {
-    for (int i = 0; i < 100; i++) {
-      update(1.0/(100*frameRate)); //20
+    for (int i = 0; i < 120; i++) {
+      update(1.0/(120*frameRate)); //20
     }
   }
   

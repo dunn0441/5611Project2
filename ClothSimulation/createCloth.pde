@@ -39,21 +39,21 @@ void createTri() {
   //noStroke();
   // fill(31,200,240);
   noStroke();
-  fill(173,216,230);
+  fill(#F7FEFF);
   textureMode(NORMAL);
-  for (int i = 0; i < numRopes-1; i++) {
+  for (int j = 0; j < numNodes-1; j++) {
     beginShape(TRIANGLE_STRIP);
     texture(cat);
-    for (int j = 0; j < numNodes-1; j++) {
-      float u = map(j, 0, numNodes-2, 0, 1);
-      float v1 = map(i, 0, numRopes-2, 0, 1);
-      float v2 = map(i+1, 0, numRopes-2, 0, 1);
+    for (int i = 0; i < numRopes-1; i++) {
+      float u = map(i, 0, numRopes-2, 0, 1);
+      float v1 = map(j, 0, numNodes-2, 0, 1);
+      float v2 = map(j+1, 0, numNodes-2, 0, 1);
       
       normal(pos[i][j].x, pos[i][j].y, pos[i][j].z);
       vertex(pos[i][j].x, pos[i][j].y, pos[i][j].z, u, v1);
       
-      normal(pos[i+1][j].x, pos[i+1][j].y, pos[i+1][j].z);
-      vertex(pos[i+1][j].x, pos[i+1][j].y, pos[i+1][j].z, u, v2);
+      normal(pos[i][j+1].x, pos[i][j+1].y, pos[i][j+1].z);
+      vertex(pos[i][j+1].x, pos[i][j+1].y, pos[i][j+1].z, u, v2);
     }
     endShape();
   }
