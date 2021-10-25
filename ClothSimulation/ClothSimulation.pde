@@ -59,6 +59,7 @@ void update(float dt) {
 boolean paused = true;
 PImage cat;
 void draw() {
+  // got this image at website https://www.theguardian.com/lifeandstyle/2020/sep/05/what-cats-mean-by-miaow-japans-pet-guru-knows-just-what-your-feline-friend-wants
   cat = loadImage("cat.jpg");
   background(255, 255, 255);
   //lights();
