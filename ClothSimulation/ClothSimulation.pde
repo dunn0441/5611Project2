@@ -20,10 +20,10 @@ PVector stringTop = new PVector(0, 0, 0);
 float restLenNode = 1;
 float restLenRope = 2;
 float mass = 0.05;
-float kHoriz = 75;
-float kVert = 75;
-float kvHoriz = 30; 
-float kvVert = 30;
+float kHoriz = 50;
+float kVert = 50;
+float kvHoriz = 25; 
+float kvVert = 25;
 float offset = 0.1;
 // float cd = 0.003;
 float cd = 0;
@@ -57,7 +57,9 @@ void update(float dt) {
 
 //Draw the scene: one sphere per mass, one line connecting each pair
 boolean paused = true;
+PImage cat;
 void draw() {
+  cat = loadImage("cat.jpg");
   background(255, 255, 255);
   //lights();
   ambientLight(128, 128, 128);
@@ -72,29 +74,16 @@ void draw() {
       update(1.0/(100*frameRate)); //20
     }
   }
-  fill(0, 0, 0);
+  
+  // create cloth
+  createTri();
 
-  /*
-  for (int i = 0; i < numRopes; i++){
-   for (int j = 0; j < numNodes-1; j++){
-   pushMatrix();
-   line(pos[i][j].x,pos[i][j].y,pos[i][j].z,pos[i][j+1].x,pos[i][j+1].y,pos[i][j+1].z);
-   translate(pos[i][j+1].x,pos[i][j+1].y,pos[i][j+1].z);
-   sphere(radius);
-   popMatrix();
-   }
-   }
-   */
-
-  fill( 234, 120, 12 );
+  fill(#CC90F2);
   pushMatrix();
   translate( spherePos.x, spherePos.y, spherePos.z );
   noStroke();
   sphere( sphereR );
   popMatrix(); 
-
-  // color in the cloth
-  createTri();
 
   if (paused)
     surface.setTitle(windowTitle + " [PAUSED]");
