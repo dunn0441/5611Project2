@@ -54,7 +54,7 @@ void airDrag() {
       PVector faero;
       float coef;
       
-      velocity = (vel[i][j].copy().add(vel[i+1][j]).add(vel[i][j+1])).mult(1/3).sub(vAir);
+      velocity = (vel[i][j].copy().add(vel[i+1][j]).add(vel[i][j+1])).mult(1.0/3.0).sub(vAir);
       
       PVector v1 = pos[i][j+1].copy();
       PVector v2 = pos[i+1][j].copy();
@@ -65,21 +65,21 @@ void airDrag() {
       
       coef = velocity.mag();
       coef *= velocity.dot(area);
-      coef /= (2 * area.mag());
+      coef /= (2.0 * area.mag());
       
       van = area.copy().mult(coef);
       
       faero = van.copy().mult(-0.5 * cd);
       
       faero.div(mass);
-      
-      acc[i][j].sub(faero.mult(1/3));
-      acc[i+1][j].sub(faero);
-      acc[i][j+1].sub(faero);
+      // println(faero);
+      acc[i][j].add(faero.mult(1.0/3.0));
+      acc[i+1][j].add(faero);
+      acc[i][j+1].add(faero);
       
       //finding second triangle
       
-      velocity = (vel[i+1][j].copy().add(vel[i+1][j+1]).add(vel[i][j+1])).mult(1/3).sub(vAir);
+      velocity = (vel[i+1][j].copy().add(vel[i+1][j+1]).add(vel[i][j+1])).mult(1.0/3.0).sub(vAir);
       
       v1 = pos[i+1][j+1].copy();
       v2 = pos[i][j+1].copy();
@@ -90,7 +90,7 @@ void airDrag() {
       
       coef = velocity.mag();
       coef *= velocity.dot(area);
-      coef /= (2 * area.mag());
+      coef /= (2.0 * area.mag());
       
       van = area.copy().mult(coef);
       
@@ -98,9 +98,9 @@ void airDrag() {
       
       faero.div(mass);
       
-      acc[i+1][j+1].sub(faero.mult(1/3));
-      acc[i+1][j].sub(faero);
-      acc[i][j+1].sub(faero);
+      acc[i+1][j+1].add(faero.mult(1.0/3.0));
+      acc[i+1][j].add(faero);
+      acc[i][j+1].add(faero);
       
     }
   }  
