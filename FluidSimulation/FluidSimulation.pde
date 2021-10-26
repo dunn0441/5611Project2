@@ -1,42 +1,12 @@
-//1D Heat Equation : du/dt = k*(d2/dx2)u
-//CSCI 5611 PDE Integration [Exercise]
-// Stephen J. Guy <sjguy@umn.edu>
-
-//NOTE: The simulation begins paused, press space to un-pause it
-  
-//TODO:
-// \ 1. Currently pressing r, prints "Resetting Simulation", but does not actually reset anything.
-//    Update the code so that r actually resets the heat to its inital condition.
-// \ 2. Recall the heat equation says the amount of heat will change at a rate proportional 
-//    to the negative of the laplacian, confirm that it is implemented correctly here.
-// \ 3. The laplacian of a function is defined by how fast the slope changes. Show that
-//    the functions laplacian() and laplacian_alt() compute the same value.
-// \ 4. The function colorByTemp() takes in a temperature (expected to be between 0 and 1)
-//     and calls fill with a color based on that temperature. Currently colorByTemp() is
-//     grayscale, change it to follow a blackbody color ramp. This is:
-//        -From 0 - 0.333, interpolate from black to red
-//        -From 0.333 - 0.666, interpolate from red to yellow
-//        -From 0.666 - 1.0, interpolate from yellow to white
-//        -You can choose any color you like for outside to 0 to 1 range (or simply
-//         clamp the input to be from 0 to 1).
-// \ 5. Currently, the temperature is not fixed on either end (free boundary conditions)
-//     Set one end of the bar to always be a fixed temperature of 1.0.
-// 6. The Stefan–Boltzmann law of evaporative cooling states that heat in a vacuum will
-//     dissipate by a rate proportional to heat^4. Add a Stefan–Boltzmann evaporative 
-//     cooling term to the simulated used in the PDE.
-// 7. How does the final state of the system compare with a cooling rate k=0 vs k=1 vs k = 100
-
-// Challenge:
-//  -Allow the user to set hot spots using their mouse or keyboard.
-//  -Why is the weight factor, alpha, multiplied by n?
-//   (Hint: How might you simulate a longer bar with n slices?)
-//  -Try midpoint integration, is it any more stable?
-
-static int n = 20;
+static int n = 200;
 float dx = 400/n;
 float dy = 40;
+
+// keep track of heights and momentum
 float h[] = new float[n];
 float hu[] = new float[n];
+float dhdt[] = new float[n]; //Height (midpoint)
+float dhudt[] = new float[n]; //Momentum (mid)
 
 // store midpoints
 float h_mid[] = new float[n];
@@ -44,119 +14,84 @@ float hu_mid[] = new float[n];
 float dhdt_mid[] = new float[n]; //Height (midpoint)
 float dhudt_mid[] = new float[n]; //Momentum (mid)
 
-float alpha = 1000*n; 
-
+// other parameteres
+float damp = 0.5;
 float k = 50;
+float g = 100;
 
 //Set up screen and initial conditions
 String windowTitle = "Fluid Simulation";
 void setup(){
-  size(600, 300);
+  size(600, 600);
   //Initial height distribution
-  for (int i = 0; i < n; i++){ //TODO: Try different initial conditions
-    h[i] = i/(float)n;
+  for (int i = 0; i < n; i++){
+    h[i] = 200 + 50*sin(2*3.14159265*i/(n));
   }
 }
 
-//TODO: Change me to a blackbody color ramp
-void colorByTemp(float u){
-//        -From 0 - 0.333, interpolate from black to red
-//        -From 0.333 - 0.666, interpolate from red to yellow
-//        -From 0.666 - 1.0, interpolate from yellow to white
-  float r, g, b;
-  if (u < 0.333) {
-    r = u/0.333;
-    g = 0;
-    b = 0;
-  } else if (u < 0.666) {
-    r = 1;
-    g = (u-0.333)/0.333;
-    b = 0;
-  } else {
-    r = 1;
-    g = 1;
-    b = (u-0.666)/0.333;
-    if (b > 1) b = 1;
-  }
-  fill(255*r,255*g,255*b);
-}
-
-//Red for positive values, blue for negative ones.
-void redBlue(float u){
-  if (u < 0)
-    fill(0,0,-255*u);
-  else
-    fill(255*u,0,0);
-}
 
 void update(float dt){
-  //use eulerian integration
-  for (int i = 1; i < n-1; i++){
+  //Compute midpoint heights and momentums
+  for (int i = 0; i < n-1; i++){ 
     h_mid[i] = (h[i+1]+h[i])/2;
     hu_mid[i] = (hu[i+1]+hu[i])/2;
-    
+  }
+  
+  for (int i = 1; i < n-1; i++){
     //Compute dh/dt (mid)
     float dhudx_mid = (hu[i+1] - hu[i])/dx;
     dhdt_mid[i] = -dhudx_mid;
     //Compute dhu/dt (mid)   
-    dhu2dx_mid = (sq(hu[i+1])/h[i+1] -sq(hu[i])/h[i])/dx;
-    dgh2dx_mid = g*(sq(h[i+1]) - sq(h[i]))/dx;
+    float dhu2dx_mid = (squ(hu[i+1])/h[i+1] - squ(hu[i])/h[i])/dx;
+    float dgh2dx_mid = g*(squ(h[i+1]) -squ(h[i]))/dx;
     dhudt_mid[i] = -(dhu2dx_mid + .5*dgh2dx_mid);
-    
-    h[i] += dhdt*dt;
-    hu[i] += dhudt*dt;
+  }
+  
+  for (int i = 1; i < n-1; i++){
+    h_mid[i] += dhdt_mid[i]*dt/2;
+    hu_mid[i] += dhudt_mid[i]*dt/2;
+  }
+  
+  for (int i = 1; i < n-1; i++){
+    //Compute dh/dt
+    float dhudx = (hu_mid[i] - hu_mid[i-1])/dx;
+    dhdt[i] = -dhudx;
+    //Compute dhu/dt
+    float dhu2dx = (squ(hu_mid[i])/h_mid[i] - squ(hu_mid[i-1])/h_mid[i-1])/dx;
+    float dgh2dx = g*(squ(h_mid[i]) - squ(h_mid[i-1]))/dx;
+    dhudt[i] = -(dhu2dx + .5*dgh2dx);
+  }
+  
+  //Impose reflective Bounardy Conditions
+  h[0] = h[1];
+  h[n-1] = h[n-2];
+  hu[0] = -hu[1];
+  hu[n-1] = -hu[n-2];
+  
+  
+  //Integrate heights and momentum
+  for (int i = 0; i < n-1; i++){
+    h[i] += damp*dhdt[i]*dt;
+    hu[i] += damp*dhudt[i]*dt;
   }
   
 }
 
 boolean paused = true;
 void draw() {
-  background(200,200,200);
+  background(255);
   
-  float dt = 0.0002;
-  for (int i = 0; i < 20; i++){
+  float dt = 0.001;
+  float sim_dt = 0.000005;
+  for (int i = 0; i < int(dt/sim_dt); i++){
     if (!paused) update(dt);
   }
     
-  //Draw Heat
-  fill(0);
-  text("Heat:", 50, 105);
-  noStroke();
-  for (int i = 0; i < n; i++){
-    colorByTemp(heat[i]);
-    pushMatrix();
-    translate(100+dx*i,100+0);
-    beginShape();
-    vertex(-dx/2, -dy/2);
-    vertex(dx/2, -dy/2);
-    vertex(dx/2, dy/2);
-    vertex(-dx/2, dy/2);
-    endShape();
-    popMatrix();
+  fill(0, 0, 255);
+  stroke(0, 0, 255);
+  for (int i = 0; i < n; i++) {
+    rect(10 + i*580/n, 600 - h[i], 581/n, h[i]);
   }
-  noFill();
-  stroke(1);
-  rect(100-dx/2,100-dy/2,n*dx,dy);
-  
-  //Draw derivative (dHeat/dt)
-  fill(0);
-  text("Derivative:", 22, 205);
-  noStroke();
-  for (int i = 0; i < n; i++){
-    redBlue(4*dheat_dt[i]);
-    pushMatrix();
-    translate(100+dx*i,200+0);
-    beginShape();
-    vertex(-dx/2, -dy/2);
-    vertex(dx/2, -dy/2);
-    vertex(dx/2, dy/2);
-    vertex(-dx/2, dy/2);
-    endShape();
-    popMatrix();
-  }
-  noFill();
-  stroke(1);
-  rect(100-dx/2,200-dy/2,n*dx,dy);
   
   if (paused)
     surface.setTitle(windowTitle + " [PAUSED]");
@@ -164,14 +99,16 @@ void draw() {
     surface.setTitle(windowTitle + " "+ nf(frameRate,0,2) + "FPS");
 }
 
+float squ(float x) {
+  return x*x;
+}
+
 void keyPressed(){
   if (key == 'r'){
-    for (int i = 0; i < n; i++){ //TODO: Try different initial conditions
-      heat[i] = i/(float)n;
-    }
+    setup();
     println("Resetting Simulation");
   }
-  else {
+  if (key == ' ') {
     paused = !paused;
   }
 }
