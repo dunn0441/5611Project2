@@ -49,10 +49,10 @@ void createTri() {
       float v1 = map(j, 0, numNodes-2, 0, 1);
       float v2 = map(j+1, 0, numNodes-2, 0, 1);
       
-      normal(pos[i][j].x, pos[i][j].y, pos[i][j].z);
+      normal(pos[i][j].y, pos[i][j].x, pos[i][j].z);
       vertex(pos[i][j].x, pos[i][j].y, pos[i][j].z, u, v1);
       
-      normal(pos[i][j+1].x, pos[i][j+1].y, pos[i][j+1].z);
+      normal(pos[i][j+1].y, pos[i][j+1].x, pos[i][j+1].z);
       vertex(pos[i][j+1].x, pos[i][j+1].y, pos[i][j+1].z, u, v2);
     }
     endShape();
